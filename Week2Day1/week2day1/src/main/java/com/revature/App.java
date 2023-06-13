@@ -1,5 +1,7 @@
 package com.revature;
 
+import java.net.http.HttpConnectTimeoutException;
+
 import com.revature.models.Car;
 
 /**
