@@ -1,0 +1,136 @@
+-- Multiplicity/Cardinality
+-- Describes the relationship between two tables. 
+-- Three different cardinalities 
+	-- One to One
+	-- One to Many / Many to One
+	-- Many to Many
+	
+	-- 1 : M (One to Many relationship)
+	-- Each restaurant is located in exactly one region. Each region must have at least
+	-- one restaurant located in it, but it may have many restaurants located in it. 
+	
+		-- An ideividual record in our table can be assoicated with many records in
+		-- another table. 
+		-- We can create this type of relationship with a Primary Key(PK) 
+		-- and unique Foreign Key. 
+	
+	-- M : N (Many to Many)
+	-- An employee may be assigned to a number of projects, but he or she can also be
+	-- assigned to no projects. A project must have at least one employee assigned to it
+	-- but it may have many employees assigned to it. 
+		-- Records in both tables can be assicated with multiple
+		-- records in another table
+		-- This is best represented by what we call a join table. 
+			-- This is a table that holds our foreign keys
+			
+			-- Table 1 (User) FK | Table 2 (Account) FK
+                   -----------------------------------------------------------
+			--  234 (Brittany)   |  544 (Brittany's Account)
+			--  234 (Brittany)   |  544 (Brittany's Alt Account)
+			--  345 (Ginger)     |  657 (Ginger's Account)
+			
+	-- 1 : 1 (One to One)
+	-- Each employee is allotted either one vehicle or no vehicles. Each vehicle is
+	-- allotted only one employee. 
+	
+		-- An individual record in a table is associated with a 
+		-- single record in anther table. 
+			-- We create this type of relationship using a PK
+			-- and a Unique FK.
+			
+-- Normalization is the process of improving the design of the
+-- database tables. 
+
+-- Each Normal Form (NF) contains a set of particular condtions
+-- that the table has to satisfy. 
+
+-- To know which NF a table is in you have to evaluate each 
+-- individual table. 
+
+-- 1NF (1st Normal Form) states that each value in each column
+-- of a table is divided into single, meaningful units. This is 
+-- also known a being atomic. 
+-- i.e. all records have a primary key and that key can be 
+-- a composite key. 
+
+	-- By definition every relational table is automatically in 1NF
+	--Transitioned to 1NF
+	CREATE TABLE VET_CLINIC_CLIENT1NF(
+		ClientID INT,
+		ClientName VARCHAR(25),
+		PetNum INT,
+		PetName VARCHAR(25) NOT NULL,
+		PetType VARCHAR(25) NOT NULL,
+		PRIMARY KEY(ClientID, PetNum)
+	);
+	
+	INSERT INTO VET_CLINIC_CLIENT1NF VALUES (111, 'Revathi', 1, 'CherryBomb', 'Dog'),
+	(222, 'Cynthia', 1, 'Lulu', 'Cat'),(222, 'Cynthia', 2, 'Oreo', 'Dog'), 
+	(222, 'Cynthia', 3, 'Margarita', 'Bird'), (333, 'Dylan', 1, 'Fluffy', 'Dog'),
+	(333, 'Dylan', 2, 'Rambo', 'Cat');
+		
+	SELECT * FROM VET_CLINIC_CLIENT1NF;
+	
+	-- In a composite key the whole set of elements must be unique
+	-- (111, 1), (222, 1), (222, 2) can exist but (111, 1) 
+	-- cannot exist again.
+	
+	-- 2NF (second normal form)  only when a table meets the requirements of 1NF
+	-- and  does not contain partial functional dependency
+		-- a partial dependency occurs when a portion of a composite
+		-- keys functionality determins a column of a relation. 
+		-- Meaning if a table has single PK then there is no way for a 
+		-- patial dependency. Make sure that no column depends on part of a non-key
+		-- column (Try to remove all composite keys) but you can have composite keys 
+		-- in 2NF.
+		
+		-- Let's convert the table to 2NF form
+		CREATE TABLE VET_CLINIC_CLIENT2NF(
+		ClientID INT PRIMARY KEY,
+		ClientName VARCHAR(25)
+	    );
+	
+	CREATE TABLE VET_CLINIC_PET2NF(
+		ClientID INT,
+		PetNum INT,
+		PetName VARCHAR(25) NOT NULL,
+		PetType VARCHAR(25) NOT NULL,
+		PRIMARY KEY(ClientID, PetNum),
+		FOREIGN KEY(ClientID) REFERENCES VET_CLINIC_CLIENT(ClientID)
+	);
+		
+		-- By splitting the tables I elimiated patial dependency. 
+		-- This helps avoid data redundancy. 
+
+	--3NF (third normal form) is if the table is 2NF and if 
+	-- it does not contain transitive functional dependencies.
+	-- In other words an indirect relationship between data. 
+		--i.e my PetType and PetName and PetNum have no real relationship
+		-- get rid of our transitive dependency by spliting our tables further. 
+
+		--Let's convert our table to 3NF!
+	
+	CREATE TABLE VET_CLINIC_CLIENT3NF (
+		ClientID INT PRIMARY KEY,
+		ClientName VARCHAR(25)
+	);
+	
+	CREATE TABLE VET_CLINIC_PET3NF (
+		PetID INT PRIMARY KEY,
+		ClientID INT,
+		PetFirstName VARCHAR(25) NOT NULL,
+		PetLastName VARCHAR(25) NOT NULL,
+		FOREIGN KEY(ClientID) REFERENCES VET_CLINIC_CLIENT3NF(ClientID)
+	);
+	
+	CREATE TABLE PET_TYPE3NF (
+		PetTypeID INT PRIMARY KEY,
+		PetID INT,
+		PetType VARCHAR(25) NOT NULL,
+		FOREIGN KEY(PetID) REFERENCES VET_CLINIC_PET3NF(PetID)
+	);
+		
+		
+		
+	
+	

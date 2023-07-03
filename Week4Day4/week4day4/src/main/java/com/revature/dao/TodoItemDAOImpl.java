@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.revature.models.TodoItem;
 import com.revature.utils.ConnectionUtils;
@@ -35,6 +37,26 @@ public class TodoItemDAOImpl implements TodoItemDAO{
         }
 
         return newItem;
+    }
+    
+    public List<TodoItem> getAllItems(){
+        List<TodoItem> items = new ArrayList();
+        try{
+            String sql = "SELECT * FROM todo_item;";
+
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                items.add(new TodoItem(rs.getInt(1), rs.getString(2)));
+            }
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+
+        return items;
     }
 
     @Override

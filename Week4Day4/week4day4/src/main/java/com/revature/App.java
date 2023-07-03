@@ -1,6 +1,7 @@
 package com.revature;
 
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 import com.revature.dao.TodoItemDAO;
@@ -20,19 +21,18 @@ public class App
 {
     public static void main( String[] args )
     {
-        //UI if I have time before lecture
-
         Scanner sc = new Scanner(System.in);
 
         System.out.println("Welcome to the TODO app!");
 
         //Accessing the DAO directly like this is unusual, all of this will eventually be refactored into a 'service' layer, for our business logic
-        TodoItemDAO dao = new TodoItemDAOImpl();//TODO: use our implementation
+        TodoItemDAO dao = new TodoItemDAOImpl();
 
         boolean running = true;
         while(running){
             System.out.println("Please select an option: ");
             System.out.println(
+                "0) view all items\n" +
                 "1) add a new item\n"+
                 "2) find an item by id\n" +
                 "3) update an item\n" +
@@ -49,6 +49,17 @@ public class App
             }
 
             switch(input){
+                case 0:{
+                    List<TodoItem> items = dao.getAllItems();
+
+                    System.out.println("Here are the current items: ");
+                    for(TodoItem item : items){
+                        System.out.println(item.toString());
+                    }
+                    System.out.println();//new line just for space
+
+                    break;
+                }
                 case 1:{
                     System.out.println("Enter the task: ");
                     String contents = sc.nextLine();

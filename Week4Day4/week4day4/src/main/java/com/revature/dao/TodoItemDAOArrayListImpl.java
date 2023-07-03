@@ -43,5 +43,9 @@ public class TodoItemDAOArrayListImpl implements TodoItemDAO{
         }
         return null;
     }
+
+    public List<TodoItem> getAllItems(){
+        return list;
+    }
     
 }
